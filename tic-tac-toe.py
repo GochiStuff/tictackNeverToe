@@ -3,9 +3,11 @@ import tkinter as tk
 root = tk.Tk()
 root.title("NEVER WIN TIC TAC TOE")
 root.geometry("800x600")
-frame = tk.Frame(root)
+
+frame = tk.Frame(root, )
 frame.pack(expand=True)
-message_label = tk.Label(root, text="Your Turn!", font=("Arial", 16))
+
+message_label = tk.Label(root, text="Your Turn!", font=("Arial", 16), bg="lavender", fg="dark slate blue")
 message_label.pack(pady=40)
 
 class TicTacToe:
@@ -19,11 +21,17 @@ class TicTacToe:
     def create_buttons(self):
         for i in range(3):
             for j in range(3):
-                btn = tk.Button(frame, text=' ', font=("Arial", 24), width=5, height=2, command=lambda i=i, j=j: self.player_move(i, j))
-                btn.grid(row=i, column=j)
+                btn = tk.Button(frame, text=' ', font=("Arial", 24), width=5, height=2,
+                                bg="white", activebackground="light pink",
+                                command=lambda i=i, j=j: self.player_move(i, j))
+                btn.grid(row=i, column=j, padx=5, pady=5)
                 self.buttons[i][j] = btn
     def update_button(self, i, j):
         self.buttons[i][j].config(text=self.board[i][j])
+        if self.board[i][j] == self.player:
+            self.buttons[i][j].config(fg="blue")
+        elif self.board[i][j] == self.ai:
+            self.buttons[i][j].config(fg="red")
     def disable_buttons(self):
         for i in range(3):
             for j in range(3):
@@ -48,20 +56,20 @@ class TicTacToe:
         self.update_button(i, j)
         winner = self.check_win()
         if winner:
-            message_label.config(text=f"{winner} wins!")
+            message_label.config(text=f"{winner} wins!", fg="dark green")
             self.disable_buttons()
             return
         if self.check_full():
-            message_label.config(text="Tie game!")
+            message_label.config(text="Tie game!", fg="dark orange")
             self.disable_buttons()
             return
         self.current_turn = 'ai'
-        message_label.config(text="AI is thinking...")
+        message_label.config(text="AI is thinking...", fg="purple")
         root.after(500, self.ai_move)
     def ai_move(self):
         move = self.find_best_move()
         if move is None:
-            message_label.config(text="Tie game!")
+            message_label.config(text="Tie game!", fg="dark orange")
             self.disable_buttons()
             return
         i, j = move
@@ -69,15 +77,15 @@ class TicTacToe:
         self.update_button(i, j)
         winner = self.check_win()
         if winner:
-            message_label.config(text=f"{winner} wins!")
+            message_label.config(text=f"{winner} wins!", fg="dark green")
             self.disable_buttons()
             return
         if self.check_full():
-            message_label.config(text="Tie game!")
+            message_label.config(text="Tie game!", fg="dark orange")
             self.disable_buttons()
             return
         self.current_turn = 'player'
-        message_label.config(text="Your Turn!")
+        message_label.config(text="Your Turn!", fg="dark slate blue")
     def find_best_move(self):
         best_score = float('-inf')
         best_move = None
